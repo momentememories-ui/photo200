@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Happy Anniversary ♡</title>
+    <title>Happy Anniversary</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -57,12 +57,14 @@
             align-items: center;
             box-sizing: border-box;
             overflow: hidden;
+            position: relative;
         }
 
         .header-title {
             text-align: center;
             margin-top: 5px;
             flex-shrink: 0;
+            z-index: 10;
         }
 
         .header-title h1 {
@@ -87,6 +89,7 @@
             align-items: center;
             margin: 10px 0;
             min-height: 0;
+            z-index: 10;
         }
 
         .puzzle-board {
@@ -143,11 +146,36 @@
             box-shadow: 0 2px 8px rgba(201, 24, 74, 0.1);
             flex-shrink: 0;
             transition: opacity 0.3s ease;
+            z-index: 10;
         }
 
         .footer-hint.hidden {
             opacity: 0;
             visibility: hidden;
+        }
+
+        /* อิโมจิลอยขึ้นมาเมื่อต่อเสร็จ */
+        .floating-emoji {
+            position: absolute;
+            bottom: 20px;
+            font-size: 26px;
+            animation: floatUp 4s linear infinite;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0.8);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-450px) scale(1.2);
+                opacity: 0;
+            }
         }
     </style>
 </head>
@@ -159,8 +187,8 @@
 <div class="mobile-container">
     <div id="game-page">
         <div class="header-title">
-            <h1>🌹 จิ๊กซอว์ความทรงจำของเรา</h1>
-            <p>ต่อจิ๊กซอว์ให้เสร็จเพื่อดูภาพความประทับใจ ❤️</p>
+            <h1>🌹 Happy Anniversary ❤️</h1>
+            <p>ต่อจิ๊กซอว์ให้เสร็จเพื่อดูภาพความประทับใจ ✨</p>
         </div>
 
         <!-- กระดานสลับภาพ 3x3 -->
@@ -177,9 +205,10 @@
 <script>
     const BOARD_SIZE = 3; // 3x3
     const TOTAL_PIECES = BOARD_SIZE * BOARD_SIZE;
-    const IMAGE_SRC = 'photo1.png'; // อัปเดตไฟล์รูปจิ๊กซอว์เป็น photo1.png
+    const IMAGE_SRC = 'photo1.png'; // ไฟล์รูปจิ๊กซอว์
 
     let board = document.getElementById('board');
+    let gamePage = document.getElementById('game-page');
     let boardWrapper = document.getElementById('board-wrapper');
     let footerHint = document.getElementById('footerHint');
     let currentPositions = [];
@@ -361,8 +390,9 @@
         if (isComplete()) {
             isGameFinished = true;
             board.classList.add('completed');
-            footerHint.classList.add('hidden'); // ซ่อนข้อความเมื่อต่อเสร็จ
+            footerHint.classList.add('hidden'); // ซ่อนข้อความแนะนำเมื่อต่อเสร็จ
             renderBoard(boardWidth, boardHeight);
+            startFloatingEmojis(); // เริ่มแสดงอิโมจิลอยขึ้นมา
         } else {
             renderBoard(boardWidth, boardHeight);
         }
@@ -370,6 +400,26 @@
 
     function isComplete() {
         return currentPositions.every((val, index) => val === index);
+    }
+
+    // ฟังก์ชันสร้างอิโมจิลอยเมื่อต่อจิ๊กซอว์เสร็จ
+    function startFloatingEmojis() {
+        const emojis = ['🌹', '❤️', '✨', '💕', '💖', '💐'];
+        setInterval(() => {
+            if (isGameFinished) {
+                let emoji = document.createElement('div');
+                emoji.classList.add('floating-emoji');
+                emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                emoji.style.left = Math.random() * 85 + 7 + '%';
+                emoji.style.fontSize = (Math.random() * 12 + 22) + 'px';
+                emoji.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                gamePage.appendChild(emoji);
+
+                setTimeout(() => {
+                    emoji.remove();
+                }, 5000);
+            }
+        }, 350);
     }
 
     window.onload = initPuzzle;
