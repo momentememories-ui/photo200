@@ -177,7 +177,7 @@
 <script>
     const BOARD_SIZE = 3; // 3x3
     const TOTAL_PIECES = BOARD_SIZE * BOARD_SIZE;
-    const IMAGE_SRC = 'photo1.jpg'; // รูปสำหรับทำจิ๊กซอว์
+    const IMAGE_SRC = 'photo1.png'; // อัปเดตไฟล์รูปจิ๊กซอว์เป็น photo1.png
 
     let board = document.getElementById('board');
     let boardWrapper = document.getElementById('board-wrapper');
@@ -361,7 +361,7 @@
         if (isComplete()) {
             isGameFinished = true;
             board.classList.add('completed');
-            footerHint.classList.add('hidden'); // ซ่อนข้อความแนะนำเมื่อต่อเสร็จ
+            footerHint.classList.add('hidden'); // ซ่อนข้อความเมื่อต่อเสร็จ
             renderBoard(boardWidth, boardHeight);
         } else {
             renderBoard(boardWidth, boardHeight);
