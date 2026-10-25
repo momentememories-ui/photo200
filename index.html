@@ -57,7 +57,6 @@
             align-items: center;
             box-sizing: border-box;
             overflow: hidden;
-            position: relative;
         }
 
         .header-title {
@@ -89,7 +88,8 @@
             align-items: center;
             margin: 10px 0;
             min-height: 0;
-            z-index: 10;
+            position: relative; /* กำหนดให้เป็นขอบเขตสำหรับอิโมจิลอย */
+            overflow: hidden;
         }
 
         .puzzle-board {
@@ -154,14 +154,14 @@
             visibility: hidden;
         }
 
-        /* อิโมจิลอยขึ้นมาเมื่อต่อเสร็จ */
+        /* อิโมจิลอยขึ้นมาบนหน้าจอจิ๊กซอว์ */
         .floating-emoji {
             position: absolute;
-            bottom: 20px;
-            font-size: 26px;
-            animation: floatUp 4s linear infinite;
+            bottom: 0px;
+            font-size: 24px;
+            animation: floatUp 3.5s linear infinite;
             pointer-events: none;
-            z-index: 5;
+            z-index: 20;
         }
 
         @keyframes floatUp {
@@ -173,7 +173,7 @@
                 opacity: 1;
             }
             100% {
-                transform: translateY(-450px) scale(1.2);
+                transform: translateY(-280px) scale(1.2);
                 opacity: 0;
             }
         }
@@ -192,7 +192,7 @@
         </div>
 
         <!-- กระดานสลับภาพ 3x3 -->
-        <div class="board-wrapper" id="board-wrapper">
+        <div class="board-wrapper" id="boardWrapper">
             <div class="puzzle-board" id="board"></div>
         </div>
 
@@ -205,11 +205,10 @@
 <script>
     const BOARD_SIZE = 3; // 3x3
     const TOTAL_PIECES = BOARD_SIZE * BOARD_SIZE;
-    const IMAGE_SRC = 'photo1.jpg'; // ปรับกลับเป็น photo1.jpg แล้วครับ
+    const IMAGE_SRC = 'photo1.jpg'; // ไฟล์รูปจิ๊กซอว์
 
     let board = document.getElementById('board');
-    let gamePage = document.getElementById('game-page');
-    let boardWrapper = document.getElementById('board-wrapper');
+    let boardWrapper = document.getElementById('boardWrapper');
     let footerHint = document.getElementById('footerHint');
     let currentPositions = [];
     let draggedIndex = null;
@@ -263,6 +262,9 @@
         board.classList.remove('completed');
         footerHint.classList.remove('hidden');
         isGameFinished = false;
+
+        // ลบอิโมจิเก่าออกทั้งหมดเมื่อรีเซ็ต
+        document.querySelectorAll('.floating-emoji').forEach(e => e.remove());
 
         currentPositions = Array.from({length: TOTAL_PIECES}, (_, i) => i);
         
@@ -392,7 +394,7 @@
             board.classList.add('completed');
             footerHint.classList.add('hidden'); // ซ่อนข้อความแนะนำเมื่อต่อเสร็จ
             renderBoard(boardWidth, boardHeight);
-            startFloatingEmojis(); // เริ่มแสดงอิโมจิลอยขึ้นมา
+            startFloatingEmojis(); // เริ่มแสดงอิโมจิลอยขึ้นมาบนหน้าจิ๊กซอว์
         } else {
             renderBoard(boardWidth, boardHeight);
         }
@@ -402,7 +404,7 @@
         return currentPositions.every((val, index) => val === index);
     }
 
-    // ฟังก์ชันสร้างอิโมจิลอยเมื่อต่อจิ๊กซอว์เสร็จ
+    // ฟังก์ชันสร้างอิโมจิลอยขึ้นมาบนหน้าจิ๊กซอว์เมื่อต่อเสร็จ
     function startFloatingEmojis() {
         const emojis = ['🌹', '❤️', '✨', '💕', '💖', '💐'];
         setInterval(() => {
@@ -410,16 +412,16 @@
                 let emoji = document.createElement('div');
                 emoji.classList.add('floating-emoji');
                 emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-                emoji.style.left = Math.random() * 85 + 7 + '%';
-                emoji.style.fontSize = (Math.random() * 12 + 22) + 'px';
-                emoji.style.animationDuration = (Math.random() * 2 + 3) + 's';
-                gamePage.appendChild(emoji);
+                emoji.style.left = Math.random() * 85 + 5 + '%';
+                emoji.style.fontSize = (Math.random() * 10 + 20) + 'px';
+                emoji.style.animationDuration = (Math.random() * 1.5 + 2.5) + 's';
+                boardWrapper.appendChild(emoji);
 
                 setTimeout(() => {
                     emoji.remove();
-                }, 5000);
+                }, 4000);
             }
-        }, 350);
+        }, 300);
     }
 
     window.onload = initPuzzle;
